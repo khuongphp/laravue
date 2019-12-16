@@ -1,7 +1,9 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-      <h3 class="title">{{ $t('login.title') }}</h3>
+      <h3 class="title">
+        {{ $t('login.title') }}
+      </h3>
       <lang-select class="set-language" />
       <el-form-item prop="email">
         <span class="svg-container">
@@ -14,12 +16,13 @@
           <svg-icon icon-class="password" />
         </span>
         <el-input
-          :type="pwdType"
           v-model="loginForm.password"
+          :type="pwdType"
           name="password"
           auto-complete="on"
           placeholder="password"
-          @keyup.enter.native="handleLogin" />
+          @keyup.enter.native="handleLogin"
+        />
         <span class="show-pwd" @click="showPwd">
           <svg-icon icon-class="eye" />
         </span>
@@ -30,8 +33,8 @@
         </el-button>
       </el-form-item>
       <div class="tips">
-        <span style="margin-right:20px;">email: admin@test.com</span>
-        <span> password: admin</span>
+        <span style="margin-right:20px;">Email: admin@laravue.dev</span>
+        <span>Password: laravue</span>
       </div>
     </el-form>
   </div>
@@ -61,8 +64,8 @@ export default {
     };
     return {
       loginForm: {
-        email: 'admin@test.com',
-        password: 'admin',
+        email: 'admin@laravue.dev',
+        password: 'laravue',
       },
       loginRules: {
         email: [{ required: true, trigger: 'blur', validator: validateEmail }],

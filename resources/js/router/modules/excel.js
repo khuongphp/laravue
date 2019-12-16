@@ -9,12 +9,13 @@ const excelRoutes = {
   meta: {
     title: 'excel',
     icon: 'excel',
+    permissions: ['view menu excel'],
   },
   children: [
     {
       path: 'export-excel',
       component: () => import('@/views/excel/ExportExcel'),
-      name: 'ExportExcel',
+      name: 'exportExcel',
       meta: { title: 'exportExcel' },
     },
     {

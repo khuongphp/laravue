@@ -36,7 +36,8 @@ import permissionRoutes from './modules/permission';
 * redirect: noredirect           if `redirect:noredirect` will no redirect in the breadcrumb
 * name:'router-name'             the name is used by <keep-alive> (must set!!!)
 * meta : {
-    roles: ['admin', 'editor']   will control the page roles (you can set multiple roles)
+    roles: ['admin', 'editor']   Visible for these roles only
+    permissions: ['view menu zip', 'manage user'] Visible for these permissions only
     title: 'title'               the name show in sub-menu and breadcrumb (recommend set)
     icon: 'svg-name'             the icon show in the sidebar
     noCache: true                if true, the page will no be cached(default is false)
@@ -70,12 +71,12 @@ export const constantRoutes = [
   {
     path: '/404',
     redirect: { name: 'Page404' },
-    component: () => import('@/views/ErrorPage/404'),
+    component: () => import('@/views/error-page/404'),
     hidden: true,
   },
   {
     path: '/401',
-    component: () => import('@/views/ErrorPage/401'),
+    component: () => import('@/views/error-page/401'),
     hidden: true,
   },
   {
@@ -144,12 +145,13 @@ export const asyncRoutes = [
     path: '/clipboard',
     component: Layout,
     redirect: 'noredirect',
+    meta: { permissions: ['view menu clipboard'] },
     children: [
       {
         path: 'index',
         component: () => import('@/views/clipboard/index'),
         name: 'ClipboardDemo',
-        meta: { title: 'clipboardDemo', icon: 'clipboard' },
+        meta: { title: 'clipboardDemo', icon: 'clipboard', roles: ['admin', 'manager', 'editor', 'user'] },
       },
     ],
   },
@@ -160,7 +162,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/zip/download',
     alwaysShow: true,
-    meta: { title: 'zip', icon: 'zip' },
+    meta: { title: 'zip', icon: 'zip', permissions: ['view menu zip'] },
     children: [
       {
         path: 'download',
@@ -174,7 +176,7 @@ export const asyncRoutes = [
     path: '/pdf',
     component: Layout,
     redirect: '/pdf/index',
-    meta: { title: 'pdf', icon: 'pdf' },
+    meta: { title: 'pdf', icon: 'pdf', permissions: ['view menu pdf'] },
     children: [
       {
         path: 'index',
@@ -192,6 +194,7 @@ export const asyncRoutes = [
   {
     path: '/i18n',
     component: Layout,
+    meta: { permissions: ['view menu i18n'] },
     children: [
       {
         path: 'index',
@@ -202,7 +205,7 @@ export const asyncRoutes = [
     ],
   },
   {
-    path: 'external-link',
+    path: '/external-link',
     component: Layout,
     children: [
       {
@@ -217,6 +220,7 @@ export const asyncRoutes = [
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
+  base: process.env.MIX_LARAVUE_PATH,
   routes: constantRoutes,
 });
 

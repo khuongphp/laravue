@@ -10,7 +10,7 @@ NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect']; // no redirect whitelist
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start();
   // set page title
@@ -32,17 +32,19 @@ router.beforeEach(async (to, from, next) => {
       } else {
         try {
           // get user info
-          // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          const { roles } = await store.dispatch('user/getInfo');
+          // note: roles must be a object array! such as: ['admin'] or ,['manager','editor']
+          const { roles, permissions } = await store.dispatch('user/getInfo');
+
           // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles);
+          // const accessRoutes = await store.dispatch('permission/generateRoutes', roles, permissions);
+          store.dispatch('permission/generateRoutes', { roles, permissions }).then(response => {
+            // dynamically add accessible routes
+            router.addRoutes(response);
 
-          // dynamically add accessible routes
-          router.addRoutes(accessRoutes);
-
-          // hack method to ensure that addRoutes is complete
-          // set the replace: true, so the navigation will not leave a history record
-          next({ ...to, replace: true });
+            // hack method to ensure that addRoutes is complete
+            // set the replace: true, so the navigation will not leave a history record
+            next({ ...to, replace: true });
+          });
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken');
@@ -55,7 +57,7 @@ router.beforeEach(async (to, from, next) => {
   } else {
     /* has no token*/
 
-    if (whiteList.indexOf(to.path) !== -1) {
+    if (whiteList.indexOf(to.matched[0] ? to.matched[0].path : '') !== -1) {
       // in the free login whitelist, go directly
       next();
     } else {
